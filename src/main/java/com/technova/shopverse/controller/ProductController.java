@@ -1,9 +1,11 @@
 package com.technova.shopverse.controller;
 
 import org.springframework.http.ResponseEntity;
+import com.technova.shopverse.dto.ProductDTO;
 import com.technova.shopverse.model.Product;
 import com.technova.shopverse.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,6 +29,15 @@ public class ProductController {
             return ResponseEntity.ok(products); // 200 OK
         }
     }
+    @GetMapping("/dto")
+    public ResponseEntity<List<ProductDTO>> getAllWithCategory() {
+        List<ProductDTO> dtoList = productService.getAllProductDTOs();
+        if (dtoList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(dtoList);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable Long id) {
         return productService.getProductById(id)
@@ -34,7 +45,7 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Product product) {
+    public ResponseEntity<?> create(@Valid @RequestBody Product product) {
         try {
             Product created = productService.createProduct(product);
             return ResponseEntity.status(201).body(created); // 201 Created
@@ -65,5 +76,14 @@ public class ProductController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build(); // 404 Not Found
         }
+    }
+
+    @GetMapping("/by-category/{categoryId}")
+    public ResponseEntity<List<ProductDTO>> getByCategory(@PathVariable Long categoryId) {
+        List<ProductDTO> products = productService.getByCategoryId(categoryId);
+        if (products.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(products);
     }
 }

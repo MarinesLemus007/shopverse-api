@@ -1,5 +1,6 @@
 package com.technova.shopverse.service;
 
+import com.technova.shopverse.dto.ProductDTO;
 import com.technova.shopverse.model.Product;
 import com.technova.shopverse.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,26 @@ public class ProductService {
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+    public List<ProductDTO> getByCategoryId(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+    public ProductDTO toDTO(Product product) {
+        String categoryName = product.getCategory() != null ? product.getCategory().getName() : null;
+        return new ProductDTO(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                categoryName
+        );
+
+    }
+    public List<ProductDTO> getAllProductDTOs() {
+        return productRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public Optional<Product> getProductById(Long id) {

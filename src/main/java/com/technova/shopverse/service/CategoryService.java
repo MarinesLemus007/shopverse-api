@@ -1,5 +1,5 @@
 package com.technova.shopverse.service;
-
+import com.technova.shopverse.dto.CategoryDTO;
 import com.technova.shopverse.model.Category;
 import com.technova.shopverse.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,22 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    public CategoryDTO getCategoryDTOById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada"));
+        List<String> productNames = category.getProducts().stream()
+                .map(product -> product.getName())
+                .toList();
+        return new CategoryDTO(
+                category.getId(),
+                category.getName(),
+                category.getDescription(),
+                productNames
+        );
+    }
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
-
     public Optional<Category> getCategoryById(Long id) {
         return categoryRepository.findById(id);
     }
@@ -28,7 +40,6 @@ public class CategoryService {
         }
         return categoryRepository.save(category);
     }
-
     public Category updateCategory(Long id, Category updated) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
 
@@ -43,6 +54,4 @@ public class CategoryService {
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
     }
-
-
 }
