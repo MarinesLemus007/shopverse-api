@@ -7,6 +7,9 @@ import com.technova.shopverse.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,12 +17,18 @@ import java.util.List;
 import java.util.Optional;
 @RestController
 @RequestMapping("/api/products")
+@Tag(name = "Productos", description = "Operaciones relacionadas con productos")
 public class ProductController {
 
     // Inyectamos el repositorio con @Autowired
     @Autowired
     private ProductService productService;
 
+    @Operation(
+            summary = "Obtener todos los productos",
+            description = "Este endpoint devuelve una lista con todos los productos disponibles"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de productos retornada correctamente")
     @GetMapping
     public ResponseEntity<List<Product>> getAll() {
         List<Product> products = productService.getAllProducts();

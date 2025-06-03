@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +16,17 @@ import java.util.List;
 import java.util.Optional;
 @RestController
 @RequestMapping("/api/categories")
+@Tag(name = "Categorias", description = "Operaciones relacionadas con las categorias")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
 
-
+    @Operation(
+            summary = "Obtener las categorias según id",
+            description = "Este endpoint devuelve la categoria disponible según el id"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de categorias retornadas correctamente")
     @GetMapping("/{id}/details")
     public ResponseEntity<CategoryDTO> getCategoryDetails(@PathVariable Long id) {
         try {
